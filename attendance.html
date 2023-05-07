@@ -1,0 +1,183 @@
+  <html>
+<head>
+    
+    
+    <script  src="js/instascan.min.js"></script>
+    <script  src="js/vue.min.js"></script>
+    <script  src="js/adapter.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/angular.min.js"></script>
+
+    <script src="js/sweetalert2/sweetalert2.all.min.js"></script>
+    <script src="js/angular.min.js"></script>
+    <script type="text/javascript">
+    var base_url = "http://localhost/qrattendance/api/";
+    </script>
+    <script src="assets/js/controller/interest.js"></script>
+
+    
+  
+    
+    <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link href="qr-atten.css" rel="stylesheet">
+ 
+ 
+   <link href="js/sweetalert2/sweetalert2.min.css" />
+</head>
+
+<body ng-app="WebApp" ng-controller="MainCtrl" ng-init="getInfo()">
+
+
+    <div class="text-center" >
+    <img class="imageback" src="img/wis2.png">
+        <h1 style="font-size: 70px;"><b> ATTENDANCE</b></h1>
+      </div>
+
+<hr>
+<hr>
+
+                                             <!-- camera -->
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6" >
+                <video id="preview" class="scanner-vid"></video>
+            </div>
+
+
+                                             <!-- to generate qrcode -->
+
+            <div class="col-md-6">
+              <div class="gene">
+
+                
+                 <div class="header">
+                    <h3>Student QR Code Generator</h3>              
+                </div>
+
+                <div class="input-form">
+                   <input type="text" class="qr-input" placeholder="Enter Student Name">
+                   <button class="btn btn-warning btn-lg " >Generate QR Code</button>
+                </div>
+                <div class="qr-code">
+                   <img src="img/wis1.png" class="qr-image">
+                </div>
+
+              </div>
+             
+             <form action="insert1.php" method="post" class="horizontal">
+                
+                <input type="hidden" name="text" id="text" placeholder="Student Name" readonly="" class="form-control" ng-model="data.cntn" required style="font-size: px;">
+  
+                
+              </form>  
+             
+          </div>
+             
+
+
+         </div>
+            
+            
+            
+
+          
+
+        </div>
+        
+
+<hr>
+<hr>
+                                     <!-- Table for Database -->
+        <div class="dbtable">
+                  
+            <table class="table">
+                <thead class="text-white">
+                    <tr>
+                        <th>No.</th>
+                        <th>Student Name</th>
+                        <th>Time In</th>
+                       
+                    
+                    </tr>
+                </thead>
+                <tbody class="text-white">
+                    <tr ng-repeat="rec in records">
+                        <td>{{ $index + 1 }}</td>
+                        <td>{{ rec.cntn}}</td>  
+                        <td>{{ rec.TIMEIN}}</td>                                
+                     
+                        
+                    
+                        <td><a href="javascript:void()" ng-click="deleteInfo(rec.id)">Delete</a></td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+
+    </div>
+
+
+    
+
+    
+
+                                     <!-- script for qr code SCANNER -->
+
+    <script>
+
+        let scanner = new Instascan.Scanner({ video: document.getElementById('preview')});
+        Instascan.Camera.getCameras().then(function(cameras){
+
+
+            if (cameras.lenght = 1 ){
+                scanner.start(cameras[0]);
+            } else{
+                alert('No Cameras Found');
+            }
+
+        }).catch(function(e){
+            console.error(e);
+        });
+
+        scanner.addListener('scan',function(c){
+            document.getElementById('text').value=c;
+            document.forms[0].submit();
+        });
+            
+
+        
+
+        
+
+    </script>
+
+                              <!-- script for qr code GENERATOR -->
+
+<script>
+    var container = document.querySelector(".container");
+    var generateBtn = document.querySelector(".btn");
+    var qrInput = document.querySelector(".qr-input");
+    var qrImg = document.querySelector(".qr-image");
+
+    generateBtn.onclick = function () {      
+      if(qrInput.value.length > 0){ 
+        generateBtn.innerText = "Generating QR Code..."       
+        qrImg.src = "https://api.qrserver.com/v1/create-qr-code/?size=170x170&data="+qrInput.value;
+        qrImg.onload = function () {
+          container.classList.add("active");
+          generateBtn.innerText = "Generate QR Code";
+        }
+      }
+    }
+  </script>
+    
+    
+   
+</body>
+
+
+</html>
